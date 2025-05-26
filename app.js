@@ -51,10 +51,13 @@ bot.on('message', async (msg) => {
 
 app.use(
   session({
-    secret: 'chat-secret',
-    resave: false,
-    saveUninitialized: false,
-    store: MongoStore.create({ mongoUrl: 'mongodb://localhost:27017/chatapp' })
+    secret: process.env.SESSION_SECRET,
+    store: MongoStore.create({ 
+      mongoUrl: process.env.MONGODB_URI,
+    }),
+    cookie: {
+      secure: process.env.NODE_ENV === 'production',
+    }
   })
 );
 
