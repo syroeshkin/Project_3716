@@ -103,6 +103,7 @@ app.post('/login', async (req, res) => {
     id: user._id.toString(),
     username: user.username
   };
+  console.log('User saved in session:', req.session.user);
   res.redirect('/chats');
 });
 
