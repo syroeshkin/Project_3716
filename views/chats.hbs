@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Мои чаты</title>
+  <link rel="stylesheet" href="/styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary: #6366f1;
+      --hover: #4f46e5;
+      --background: #f8fafc;
+      --text: #1e293b;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 2rem;
+      background: var(--background);
+      color: var(--text);
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      font-weight: 600;
+      margin-bottom: 2rem;
+      color: var(--text);
+    }
+
+    .search-box {
+      margin-bottom: 2rem;
+      position: relative;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 0.8rem 1rem;
+      border: 2px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    input[type="text"]:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+    }
+
+    button {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    button:hover {
+      background: var(--hover);
+      transform: translateY(-1px);
+    }
+
+    .logout-btn {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: #f43f5e;
+    }
+
+    .logout-btn:hover {
+      background: #dc2626;
+    }
+
+    .chats-list {
+      margin: 2rem 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .chat-item {
+      background: white;
+      padding: 1.2rem;
+      margin-bottom: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+      transition: transform 0.2s ease;
+    }
+
+    .chat-item:hover {
+      transform: translateX(5px);
+    }
+
+    .chat-item a {
+      text-decoration: none;
+      color: var(--text);
+      font-weight: 500;
+      display: block;
+    }
+
+    .create-chat {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+
+    .create-chat input {
+      margin-bottom: 1rem;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem;
+      color: #64748b;
+    }
+  </style>
+</head>
+<body>
+  <h1>Добро пожаловать{{#if user}}, {{user.username}}{{/if}}! 👋</h1>
+  
+  <form action="/logout" method="GET">
+    <button type="submit" class="logout-btn">Выйти</button>
+  </form>
+
+  <div class="search-box">
+    <form action="/search" method="GET">
+      <input 
+        type="text" 
+        name="q" 
+        placeholder="Поиск чатов по названию..."
+        value="{{#if searchQuery}}{{searchQuery}}{{/if}}"
+      >
+      <button type="submit">Искать</button>
+    </form>
+  </div>
+
+  {{#if chats.length}}
+    <h2>Ваши чаты</h2>
+    <ul class="chats-list">
+      {{#each chats}}
+        <li class="chat-item">
+          <a href="/chats/{{this._id}}">{{this.name}}</a>
+        </li>
+      {{/each}}
+    </ul>
+  {{else}}
+    <div class="empty-state">
+      <p>У вас пока нет чатов</p>
+    </div>
+  {{/if}}
+
+  <div class="create-chat">
+    <h3>Создать новый чат</h3>
+    <form action="/chats" method="POST">
+      <input type="text" name="name" placeholder="Введите название чата" required>
+      <button type="submit">Создать чат</button>
+    </form>
+  </div>
+</body>
+</html>
