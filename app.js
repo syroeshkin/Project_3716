@@ -12,6 +12,7 @@ const Chat = require('./models/Chat');
 const Message = require('./models/Message');
 const TelegramBot = require('node-telegram-bot-api');
 const bot = new TelegramBot(process.env.TELEGRAM_TOKEN, {polling: true});
+bot.setWebHook(`${process.env.APP_URL}/bot${process.env.TELEGRAM_TOKEN}`);
 const PORT = process.env.PORT || 3000;
 mongoose.connect(process.env.MONGODB_URI);
 
