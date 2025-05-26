@@ -7,6 +7,7 @@ const path = require('path');
 const bcrypt = require('bcryptjs');
 const app = express();
 const hbs = require('hbs');
+require('./helpers')();
 const User = require('./models/User');
 const Chat = require('./models/Chat');
 const Message = require('./models/Message');
@@ -106,12 +107,12 @@ app.get('/logout', (req, res) => {
   req.session.destroy(() => res.redirect('/login'));
 });
 
-app.get('/chats', async (req, res) => {
+app.get('/chats', requireAuth, async (req, res) => {
   const chats = await Chat.find({ participants: req.session.user.id });
   res.render('chats', { chats });
 });
 
-app.get('/search', async (req, res) => {
+app.get('/search', requireAuth, async (req, res) => {
   const searchQuery = req.query.q;
   
   const chats = await Chat.find({
@@ -125,7 +126,7 @@ app.get('/search', async (req, res) => {
   });
 });
 
-app.post('/chats/:id/join', async (req, res) => {
+app.post('/chats/:id/join', requireAuth, async (req, res) => {
   const chat = await Chat.findById(req.params.id);
   const userId = new mongoose.Types.ObjectId(req.session.user.id);
 
@@ -137,7 +138,7 @@ app.post('/chats/:id/join', async (req, res) => {
   res.redirect('/chats/' + chat._id);
 });
 
-app.post('/chats', async (req, res) => {
+app.post('/chats', requireAuth, async (req, res) => {
   const chat = new Chat({
     name: req.body.name,
     creator: req.session.user.id,
@@ -149,7 +150,7 @@ app.post('/chats', async (req, res) => {
 });
 
 const { Types } = mongoose;
-app.get('/chats/:id', async (req, res) => {
+app.get('/chats/:id', requireAuth, async (req, res) => {
   const chatId = req.params.id;
   if (!Types.ObjectId.isValid(chatId)) return res.status(400).send('Invalid ID');
 
@@ -166,7 +167,7 @@ app.get('/chats/:id', async (req, res) => {
   });
 });
 
-app.post('/chats/:id/messages', async (req, res) => {
+app.post('/chats/:id/messages', requireAuth, async (req, res) => {
   const chat = await Chat.findById(req.params.id);
   if (!chat) return res.status(404).send('Chat not found');
   
